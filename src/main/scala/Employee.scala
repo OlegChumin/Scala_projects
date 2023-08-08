@@ -4,6 +4,13 @@ import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+/**
+ * В данном примере мы создаем список сотрудников (employees), разделяем его на части для каждого потока, создаем список
+ * будущих результатов (futures), и каждый поток обрабатывает свою часть сотрудников с ограниченным доступом к ресурсу
+ * (используя synchronized для синхронизации доступа). В итоге все потоки дожидаются завершения друг друга, и результаты
+ * выводятся на экран.
+ * */
+
 case class Employee(name: String, surName: String, age: Int, salary: Double, department: String)
 
 object ThreadExample {
