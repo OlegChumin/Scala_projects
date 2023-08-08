@@ -1,15 +1,8 @@
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Seq
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-/**
- * В данном примере мы создаем список сотрудников (employees), разделяем его на части для каждого потока, создаем список
- * будущих результатов (futures), и каждый поток обрабатывает свою часть сотрудников с ограниченным доступом к ресурсу
- * (используя synchronized для синхронизации доступа). В итоге все потоки дожидаются завершения друг друга, и результаты
- * выводятся на экран.
- * */
 
 case class Employee(name: String, surName: String, age: Int, salary: Double, department: String)
 
@@ -18,11 +11,11 @@ object ThreadExample {
     val resourceLimit = 4 // Максимальное количество потоков с доступом к ресурсу
 
     // Создаем список для хранения Employee
-    val employees: ListBuffer[Employee] = ListBuffer()
+    var employees: Seq[Employee] = Seq()
 
     // Заполняем список
     for (i <- 1 to 20) {
-      employees += Employee(s"Name$i", s"Surname$i", 25 + i, 1000 + i * 100, s"Department${i % 5}")
+      employees :+= Employee(s"Name$i", s"Surname$i", 25 + i, 1000 + i * 100, s"Department${i % 5}")
     }
 
     // Разделяем список на части для каждого потока
@@ -42,15 +35,12 @@ object ThreadExample {
     employees.foreach(println)
   }
 
-  def processEmployees(employees: Seq[Employee]): ListBuffer[Employee] = {
-    val resultBuffer = ListBuffer[Employee]()
+  def processEmployees(employees: Seq[Employee]): Unit = {
     employees.foreach { employee =>
-      synchronized {
+      synchronized { // Ограничиваем доступ к ресурсу с помощью synchronized
         println(s"Processing employee: ${employee.name}")
-        // Логика обработки сотрудника
-        resultBuffer += employee
+        // Здесь может быть логика обработки сотрудника
       }
     }
-    resultBuffer
   }
 }
