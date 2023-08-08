@@ -42,12 +42,15 @@ object ThreadExample {
     employees.foreach(println)
   }
 
-  def processEmployees(employees: Seq[Employee]): Unit = {
+  def processEmployees(employees: Seq[Employee]): ListBuffer[Employee] = {
+    val resultBuffer = ListBuffer[Employee]()
     employees.foreach { employee =>
-      synchronized { // Ограничиваем доступ к ресурсу с помощью synchronized
+      synchronized {
         println(s"Processing employee: ${employee.name}")
-        // Здесь может быть логика обработки сотрудника
+        // Логика обработки сотрудника
+        resultBuffer += employee
       }
     }
+    resultBuffer
   }
 }
